@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CategoryDao
 {
-    List<Category> getAllCategories();
+    List<Category> getAll();
     Category getById(int categoryId);
     Category add(Category category);
     void update(int categoryId, Category category);

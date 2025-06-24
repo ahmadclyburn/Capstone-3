@@ -14,7 +14,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("categories")
 @CrossOrigin
 public class CategoriesController
 {
@@ -30,11 +30,11 @@ public class CategoriesController
     // create an Autowired controller to inject the categoryDao and ProductDao
 
     // add the appropriate annotation for a get action
-@PutMapping()
+@GetMapping()
 @PreAuthorize("permitAll()")
 public List<Category> getAll(){
 
-    return categoryDao.getAllCategories();
+    return categoryDao.getAll();
    }
 
     @RequestMapping(path = "/{id}")

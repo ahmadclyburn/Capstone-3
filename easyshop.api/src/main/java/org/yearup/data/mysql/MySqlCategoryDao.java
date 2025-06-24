@@ -3,7 +3,6 @@ package org.yearup.data.mysql;
 import org.springframework.stereotype.Component;
 import org.yearup.data.CategoryDao;
 import org.yearup.models.Category;
-import org.yearup.models.Product;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -22,10 +21,11 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
     }
 
     @Override
-    public List<Category> getAllCategories()
+    public List<Category> getAll()
     {
         List<Category> categories = new ArrayList<>();
-        String sql = "SELECT * FROM categories";
+        String sql = "SELECT * " +
+                     "FROM categories";
 
         try (Connection connection = getConnection())
         {
@@ -50,7 +50,9 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
     @Override
     public Category getById(int categoryId)
     {
-        String sql = "SELECT * FROM categories WHERE category_id = ?";
+        String sql = "SELECT * " +
+                     "FROM categories " +
+                     "WHERE category_id = ?";
         try (Connection connection = getConnection())
         {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -119,7 +121,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
     {
 
         String sql = "DELETE FROM categories " +
-                " WHERE category_id = ?;";
+                     "WHERE category_id = ?;";
 
         try (Connection connection = getConnection())
         {
