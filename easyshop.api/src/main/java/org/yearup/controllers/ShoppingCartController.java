@@ -33,7 +33,9 @@ public class ShoppingCartController
         this.productDao = productDao;
     }
 
+
     // each method in this controller requires a Principal object as a parameter
+    @GetMapping
     public ShoppingCart getCart(Principal principal)
     {
         try
