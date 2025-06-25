@@ -41,7 +41,7 @@ public class ShoppingCartController
     @GetMapping
     public ShoppingCart getCart(Principal principal)
     {
-        try
+
         {
             // get the currently logged in username
             String userName = principal.getName();
@@ -51,12 +51,8 @@ public class ShoppingCartController
 
             // use the shoppingcartDao to get all items in the cart and return the cart
             return shoppingCartDao.getByUserId(userId);
-        }
-        catch(Exception e)
-        {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... you broke it.");
-        }
-    }
+
+    }}
 
     // add a POST method to add a product to the cart - the url should be
     // https://localhost:8080/cart/products/15 (15 is the productId to be added
@@ -69,21 +65,11 @@ public class ShoppingCartController
             int userId = user.getId();
             return shoppingCartDao.addProduct(userId, productId);
 
-//            ShoppingCart cart = shoppingCartDao.getByUserId(userId);
-//            boolean productExists = cart.getItems().values().stream()
-//                    .anyMatch(cartItem -> cartItem.getProductId() == productId);
-//            if(productExists){
-//                ShoppingCartItem existingItem = cart.getItems().get(productId);
-//                int newQuantity = existingItem.getQuantity() + item.getQuantity();
-//                shoppingCartDao.updateQuantity(userId, productId, newQuantity);
-//            }
-//            else{
-//                shoppingCartDao.addProduct(userId, productId, item.getQuantity());
-//            }  return shoppingCartDao.getByUserId(userId);
         } catch (Exception e) {
             System.err.println("error adding product");
             throw new RuntimeException(e);
         }
+
 }
 
     // add a PUT method to update an existing product in the cart - the url should be

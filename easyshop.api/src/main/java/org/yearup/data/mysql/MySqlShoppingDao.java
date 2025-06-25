@@ -9,7 +9,9 @@ import org.yearup.models.*;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class MySqlShoppingDao extends MySqlDaoBase implements ShoppingCartDao {
@@ -20,8 +22,9 @@ public class MySqlShoppingDao extends MySqlDaoBase implements ShoppingCartDao {
     @Override
     public ShoppingCart getByUserId(int userId) {
         ShoppingCart cart = new ShoppingCart();
+        Map<Integer, ShoppingCartItem> items = new HashMap<>();
         String sql = "SELECT * " +
-                "FROM users " +
+                "FROM shopping_cart " +
                 "WHERE user_id = ?";
         try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -37,8 +40,11 @@ public class MySqlShoppingDao extends MySqlDaoBase implements ShoppingCartDao {
                 shoppingCartItem.setProduct(product);
                 shoppingCartItem.setQuantity(quantity);
                 cart.add(shoppingCartItem);
+                items.put(productId, shoppingCartItem);
+
 
             }
+            cart.setItems(items);
             return cart;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -66,12 +72,13 @@ public class MySqlShoppingDao extends MySqlDaoBase implements ShoppingCartDao {
 
     @Override
     public ShoppingCart addProduct(int userId, int productId){
-        String sql = "INSERT into shopping_cart (user_id, product_id, quantity) VALUES(?,?,?)";
+        String sql = "INSERT into shopping_cart (user_id, product_id, quantity) VALUES(?, ?, ?)";
         try(Connection connection = getConnection()){
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, userId);
             statement.setInt(2, productId);
-            statement.executeQuery();
+            statement.setInt(3, 1);
+            statement.executeUpdate();
             return getByUserId(userId);
         }
         catch (SQLException e){
