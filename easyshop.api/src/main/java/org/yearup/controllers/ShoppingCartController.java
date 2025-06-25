@@ -1,6 +1,5 @@
 package org.yearup.controllers;
 
-import org.apache.ibatis.type.SimpleTypeRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +17,10 @@ import java.sql.SQLException;
 
 // convert this class to a REST controller
 // only logged in users should have access to these actions
+@RestController
+@PreAuthorize("isAuthenticated")
+@CrossOrigin
+@RequestMapping("cart")
 public class ShoppingCartController
 {
     // a shopping cart requires
@@ -59,25 +62,25 @@ public class ShoppingCartController
     // https://localhost:8080/cart/products/15 (15 is the productId to be added
     @PostMapping("products/{productId}")
     @PreAuthorize("isAuthenticated()")
-    public ShoppingCart addProduct(@PathVariable int productId, @RequestBody ShoppingCartItem item, Principal principal) throws SQLException {
-        int userId = 0;
+    public ShoppingCart addProduct(@PathVariable int productId, Principal principal) {
         try {
             String userName = principal.getName();
             User user = userDao.getByUserName(userName);
-            userId = user.getId();
+            int userId = user.getId();
+            return shoppingCartDao.addProduct(userId, productId);
 
-            ShoppingCart cart = shoppingCartDao.getByUserId(userId);
-            boolean productExists = cart.getItems().values().stream()
-                    .anyMatch(cartItem -> cartItem.getProductId() == productId);
-            if(productExists){
-                ShoppingCartItem existingItem = cart.getItems().get(productId);
-                int newQuantity = existingItem.getQuantity() + item.getQuantity();
-                shoppingCartDao.updateQuantity(userId, productId, newQuantity);
-            }
-            else{
-                shoppingCartDao.addProduct(userId, productId, item.getQuantity());
-            }  return shoppingCartDao.getByUserId(userId);
-        } catch (SQLException e) {
+//            ShoppingCart cart = shoppingCartDao.getByUserId(userId);
+//            boolean productExists = cart.getItems().values().stream()
+//                    .anyMatch(cartItem -> cartItem.getProductId() == productId);
+//            if(productExists){
+//                ShoppingCartItem existingItem = cart.getItems().get(productId);
+//                int newQuantity = existingItem.getQuantity() + item.getQuantity();
+//                shoppingCartDao.updateQuantity(userId, productId, newQuantity);
+//            }
+//            else{
+//                shoppingCartDao.addProduct(userId, productId, item.getQuantity());
+//            }  return shoppingCartDao.getByUserId(userId);
+        } catch (Exception e) {
             System.err.println("error adding product");
             throw new RuntimeException(e);
         }
