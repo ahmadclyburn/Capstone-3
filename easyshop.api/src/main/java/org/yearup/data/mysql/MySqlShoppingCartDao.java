@@ -10,12 +10,11 @@ import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
-public class MySqlShoppingDao extends MySqlDaoBase implements ShoppingCartDao {
-    public MySqlShoppingDao(DataSource dataSource) {
+public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDao {
+    public MySqlShoppingCartDao(DataSource dataSource) {
         super(dataSource);
     }
 
@@ -88,7 +87,7 @@ public class MySqlShoppingDao extends MySqlDaoBase implements ShoppingCartDao {
 
     @Override
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeProduct(int userId, int productId) {
+    public ShoppingCart removeProduct(int userId, int productId) {
     String sql = "DELETE FROM shopping_cart WHERE product_id = ? and user_id =?";
     try(Connection connection = getConnection()) {
         PreparedStatement statement = connection.prepareStatement(sql);
@@ -98,18 +97,20 @@ public class MySqlShoppingDao extends MySqlDaoBase implements ShoppingCartDao {
     }catch (SQLException e ){
         throw new RuntimeException(e);
     }
+    return getByUserId(userId);
     }
 
     @Override
-    public void clearCart(int userId) {
+    public ShoppingCart clearCart(int userId) {
         String sql = "DELETE FROM shopping_cart WHERE user_id = ?";
         try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, userId);
             statement.executeUpdate();
-    }catch (SQLException e ){
+    }catch (SQLException e ) {
             throw new RuntimeException(e);
         }
+        return getByUserId(userId);
 
     }
 
