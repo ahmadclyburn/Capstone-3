@@ -10,6 +10,6 @@ public interface CategoryDao
     List<Category> getAll();
     Category getById(int categoryId);
     Category add(Category category);
-    void update(int categoryId, Category category);
+    Category update(int categoryId, Category category);
     void delete(int categoryId);
 }

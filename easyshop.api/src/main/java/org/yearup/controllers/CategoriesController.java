@@ -89,17 +89,13 @@ public List<Category> getAll(){
     {
         try
         {
-            category = categoryDao.getById(id);
-
-            if(category == null)
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
-            categoryDao.update(id, category);
+             categoryDao.update(id, category);
         }
         catch(Exception ex)
         {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... you broke it.");
         }
+
     }
 
 

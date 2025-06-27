@@ -36,11 +36,12 @@ public class ProfileController {
             throw new RuntimeException(e);
         }    }
     @PutMapping()
-    public Profile updateProfile(Principal principal) {
+    public Profile updateProfile(@RequestBody Profile profile, Principal principal) {
         try {
+            System.out.println("Updating profile for user: ");
             String userName = principal.getName();
             User user = userDao.getByUserName(userName);
-            Profile profile = profileDao.getByUserId(user.getId());
+            profile.setUserId(user.getId());
             return profileDao.update(profile);
 
         } catch (Exception e) {
